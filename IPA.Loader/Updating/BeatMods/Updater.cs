@@ -193,12 +193,12 @@ namespace IPA.Updating.BeatMods
 
             foreach (var plugin in BSMetas)
             { // initialize with data to resolve (1.1)
-                if (plugin.Metadata.Id != null)
+                if (plugin.Metadata.Name != null)
                 { // updatable
                     var msinfo = plugin.Metadata;
                     var dep = new DependencyObject
                     {
-                        Name = msinfo.Id,
+                        Name = msinfo.Name,
                         Version = msinfo.Version,
                         Requirement = new Range($">={msinfo.Version}"),
                         LocalPluginMeta = msinfo
@@ -210,11 +210,11 @@ namespace IPA.Updating.BeatMods
 
             foreach (var meta in PluginLoader.ignoredPlugins.Keys)
             { // update ignored
-                if (meta.Id != null)
+                if (meta.Name != null)
                 { // updatable
                     var dep = new DependencyObject
                     {
-                        Name = meta.Id,
+                        Name = meta.Name,
                         Version = meta.Version,
                         Requirement = new Range($">={meta.Version}"),
                         LocalPluginMeta = meta
@@ -226,11 +226,11 @@ namespace IPA.Updating.BeatMods
 
             foreach (var meta in DisabledPlugins)
             { // update ignored
-                if (meta.Id != null)
+                if (meta.Name != null)
                 { // updatable
                     var dep = new DependencyObject
                     {
-                        Name = meta.Id,
+                        Name = meta.Name,
                         Version = meta.Version,
                         Requirement = new Range($">={meta.Version}"),
                         LocalPluginMeta = meta
