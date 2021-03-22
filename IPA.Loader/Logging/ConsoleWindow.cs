@@ -9,6 +9,9 @@ namespace IPA.Logging
     // https://stackoverflow.com/a/48864902/3117125
     internal static class WinConsole
     {
+        private const int ConsoleCodePage = 65001;
+        private const string ConsoleCodePageName = "UTF-8";
+
         internal static TextWriter ConOut;
         internal static TextReader ConIn;
 
@@ -53,6 +56,11 @@ namespace IPA.Logging
                 Console.SetOut(writer);
                 Console.SetError(writer);
 
+                if (!SetConsoleOutputCP(ConsoleCodePage))
+                {
+                    Console.Error.WriteLine($"Could not set console output code page to {ConsoleCodePage} ({ConsoleCodePageName})");
+                }
+
                 var handle = GetStdHandle(-11); // get stdout handle (should be CONOUT$ at this point)
                 if (GetConsoleMode(handle, out var mode))
                 {
@@ -79,6 +87,11 @@ namespace IPA.Logging
             if (fs != null)
             {
                 Console.SetIn(ConIn = new StreamReader(fs));
+
+                if (!SetConsoleCP(ConsoleCodePage))
+                {
+                    Console.Error.WriteLine($"Could not set console input code page to {ConsoleCodePage} ({ConsoleCodePageName})");
+                }
             }
         }
 
@@ -123,6 +136,12 @@ namespace IPA.Logging
         [DllImport("kernel32.dll")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool SetConsoleCP(uint wCodePageID);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool SetConsoleOutputCP(uint wCodePageID);
 
         private const uint EnableVTProcessing = 0x0004;
 
